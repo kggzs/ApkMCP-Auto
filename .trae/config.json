@@ -1,0 +1,88 @@
+{
+  "model": {
+    "provider": "anthropic",
+    "name": "claude-sonnet-4-5",
+    "fallback": "claude-sonnet-4"
+  },
+
+  "mcp": {
+    "servers": {
+      "jadx-mcp-server": {
+        "type": "stdio",
+        "command": "java",
+        "args": [
+          "-jar",
+          "E:/A_java/java/jadx-mcp-server/jadx-ai-mcp-6.3.0.jar"
+        ],
+        "enabled": true,
+        "description": "jadx MCP 服务器 (Java JAR 版本)"
+      },
+      "jadx-mcp-python": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/A_java/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"
+        ],
+        "enabled": false,
+        "description": "jadx MCP 服务器 (Python 版本)"
+      },
+      "apktool-mcp-server": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/A_java/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py",
+          "--workspace",
+          "E:/A_java/apktool_workspace",
+          "--apktool-path",
+          "E:/A_java/java/apktool/apktool.bat"
+        ],
+        "enabled": true,
+        "description": "apktool MCP 服务器"
+      }
+    }
+  },
+
+  "permission": {
+    "read": {
+      "allow": ["*"],
+      "deny": ["*.env", "./secrets/**"]
+    },
+    "edit": {
+      "allow": ["src/**"],
+      "deny": [],
+      "prompt": ["*"]
+    },
+    "bash": {
+      "allow": ["git *"],
+      "deny": ["rm *"],
+      "prompt": ["*"]
+    }
+  },
+
+  "tools": {
+    "write": true,
+    "bash": true,
+    "webfetch": true,
+    "search": true
+  },
+
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "*.log",
+      ".git/**",
+      "java/jre/**",
+      "*.zip",
+      "*.jar"
+    ]
+  },
+
+  "instructions": {
+    "default": "Android 逆向工程工具项目，包含 jadx-gui、apktool 及其 MCP 服务器。"
+  },
+
+  "ui": {
+    "scroll_speed": 3,
+    "diff_style": "auto"
+  }
+}
