@@ -103,6 +103,8 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
 
 ### 4. 配置 MCP 客户端
 
+#### Claude Desktop 配置
+
 在 Claude Desktop 或其他 MCP 客户端中配置：
 
 ```json
@@ -119,6 +121,113 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
   }
 }
 ```
+
+#### Trae IDE 配置
+
+在 Trae IDE 中使用本项目，请创建 `.trae/config.json` 文件：
+
+```json
+{
+  "model": {
+    "provider": "anthropic",
+    "name": "claude-sonnet-4-5",
+    "fallback": "claude-sonnet-4"
+  },
+
+  "mcp": {
+    "servers": {
+      "jadx-mcp-server": {
+        "type": "stdio",
+        "command": "java",
+        "args": [
+          "-jar",
+          "E:/A_java/java/jadx-mcp-server/jadx-ai-mcp-6.3.0.jar"
+        ],
+        "enabled": true,
+        "description": "jadx MCP 服务器 (Java JAR 版本)"
+      },
+      "jadx-mcp-python": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/A_java/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"
+        ],
+        "enabled": false,
+        "description": "jadx MCP 服务器 (Python 版本)"
+      },
+      "apktool-mcp-server": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/A_java/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py",
+          "--workspace",
+          "E:/A_java/apktool_workspace",
+          "--apktool-path",
+          "E:/A_java/java/apktool/apktool.bat"
+        ],
+        "enabled": true,
+        "description": "apktool MCP 服务器"
+      }
+    }
+  },
+
+  "permission": {
+    "read": {
+      "allow": ["*"],
+      "deny": ["*.env", "./secrets/**"]
+    },
+    "edit": {
+      "allow": ["src/**"],
+      "deny": [],
+      "prompt": ["*"]
+    },
+    "bash": {
+      "allow": ["git *"],
+      "deny": ["rm *"],
+      "prompt": ["*"]
+    }
+  },
+
+  "tools": {
+    "write": true,
+    "bash": true,
+    "webfetch": true,
+    "search": true
+  },
+
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "*.log",
+      ".git/**",
+      "java/jre/**",
+      "*.zip",
+      "*.jar"
+    ]
+  },
+
+  "instructions": {
+    "default": "Android 逆向工程工具项目，包含 jadx-gui、apktool 及其 MCP 服务器。"
+  },
+
+  "ui": {
+    "scroll_speed": 3,
+    "diff_style": "auto"
+  }
+}
+```
+
+Trae 配置说明：
+
+| 配置项 | 说明 |
+|--------|------|
+| `model` | AI 模型配置，支持主模型和备用模型 |
+| `mcp.servers` | MCP 服务器配置，包含 jadx 和 apktool 两个服务器 |
+| `permission` | 文件读写和命令执行权限控制 |
+| `tools` | 启用/禁用各类工具 |
+| `watcher` | 文件监控忽略规则 |
+| `instructions` | AI 助手的默认上下文说明 |
+| `ui` | 界面显示配置 |
 
 ---
 
