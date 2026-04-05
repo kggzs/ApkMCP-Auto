@@ -1,0 +1,44 @@
+fastboot flash boot
+fastboot reboot
+
+
+adb devices                                              // 列出所有已连接的Android设备
+adb reboot bootloader                                    // 重启设备进入Bootloader模式
+fastboot flash boot boot.img                             // 刷入boot分区镜像
+fastboot reboot                                          // 从fastboot模式重启设备
+adb logcat                                               // 查看设备日志输出
+adb shell                                                // 进入设备的shell命令行
+adb install app.apk                                      // 安装APK应用到设备
+adb push local.txt /sdcard/                              // 将本地文件推送到设备
+adb pull /sdcard/file.txt ./                             // 从设备拉取文件到本地
+adb reboot                                               // 重启设备
+adb reboot recovery                                      // 重启设备进入Recovery模式
+adb reboot fastboot                                      // 重启设备进入Fastboot模式
+adb shell pm list packages                               // 列出设备上所有已安装的包
+adb shell am start -n com.example.app/.MainActivity      // 启动指定应用的Activity
+adb shell input tap 500 500                              // 模拟屏幕点击（x,y坐标）
+adb shell input swipe 100 500 900 500                    // 模拟屏幕滑动（起点x,y到终点x,y）
+adb shell screencap /sdcard/screenshot.png               // 截取设备屏幕并保存
+adb shell screenrecord /sdcard/video.mp4                 // 录制设备屏幕视频
+adb shell dumpsys battery                                // 获取电池状态信息
+adb shell dumpsys wifi                                   // 获取WiFi状态信息
+adb shell getprop ro.build.version.release               // 获取Android系统版本号
+adb shell setprop persist.sys.test 1                     // 设置系统属性值
+adb forward tcp:8080 tcp:8080                            // 端口转发（本地到设备）
+adb reverse tcp:3000 tcp:3000                            // 反向端口转发（设备到本地）
+adb connect 192.168.1.100:5555                           // 通过网络连接设备
+adb disconnect 192.168.1.100:5555                        // 断开网络连接的设备
+adb kill-server                                          // 停止ADB服务器
+adb start-server                                         // 启动ADB服务器
+adb root                                                 // 以root权限重启ADB守护进程
+adb unroot                                               // 取消root权限
+adb sideload update.zip                                  // 通过sideload刷入更新包
+adb backup -apk -shared -all -f backup.ab                // 备份设备数据
+adb restore backup.ab                                    // 从备份文件恢复数据
+adb bugreport                                            // 生成设备错误报告
+adb shell pm clear com.example.app                       // 清除应用数据和缓存
+adb shell am force-stop com.example.app                  // 强制停止应用
+adb shell settings put global airplane_mode_on 1         // 开启飞行模式
+adb shell am broadcast -a android.intent.action.AIRPLANE_MODE  // 发送飞行模式广播
+adb shell wm size 1080x1920                              // 设置屏幕分辨率
+adb shell wm density 420                                 // 设置屏幕像素密度
