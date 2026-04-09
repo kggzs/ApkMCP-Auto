@@ -1,0 +1,8 @@
+# 静态分析增强工具 MCP Server 依赖
+# Python 3.14+ 兼容
+
+# MCP 框架
+mcp>=1.0.0
+
+# 类型提示支持
+typing-extensions>=4.0.0

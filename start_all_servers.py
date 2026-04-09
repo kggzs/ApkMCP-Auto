@@ -9,7 +9,7 @@ MCP Server 启动脚本
 - 自动检测服务器状态
 - 支持 HTTP 模式和 stdio 模式
 
-作者：AI Assistant
+所有路径使用相对路径，确保项目可移植
 """
 
 import subprocess
@@ -22,52 +22,60 @@ from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 
 
-# 项目根目录
-PROJECT_ROOT = Path(__file__).parent.absolute()
+# 项目根目录（使用相对路径）
+PROJECT_ROOT = Path(__file__).parent
 
-# MCP 服务器配置
+# MCP 服务器配置（使用相对路径）
 SERVERS_CONFIG = {
     "jadx": {
         "name": "JADX MCP Server",
-        "script": PROJECT_ROOT / "java" / "jadx-mcp-server" / "jadx-mcp-server" / "jadx_mcp_server.py",
+        "script": PROJECT_ROOT / "tools" / "jadx" / "server.py",
+        "jar": PROJECT_ROOT / "tools" / "jadx" / "server.jar",
         "port": 8651,
-        "args": []
+        "args": [],
+        "use_java": True
     },
     "apktool": {
         "name": "APKTool MCP Server",
-        "script": PROJECT_ROOT / "java" / "apktool-mcp-server" / "apktool-mcp-server" / "apktool_mcp_server.py",
+        "script": PROJECT_ROOT / "tools" / "apktool" / "server.py",
         "port": 8652,
         "args": [
-            "--workspace", str(PROJECT_ROOT / "workspace" / "apktool"),
-            "--apktool-path", str(PROJECT_ROOT / "java" / "apktool" / "apktool.bat")
+            "--workspace", "tools/workspace/apktool",
+            "--apktool-path", "tools/bin/apktool.bat"
         ]
     },
     "adb": {
         "name": "ADB MCP Server",
-        "script": PROJECT_ROOT / "adb" / "adb-mcp-server" / "adb_mcp_server.py",
+        "script": PROJECT_ROOT / "tools" / "adb" / "server.py",
         "port": 8653,
         "args": [
-            "--adb-path", str(PROJECT_ROOT / "adb" / "adb.exe")
+            "--adb-path", "tools/bin/adb.exe"
         ]
     },
     "sign-tools": {
         "name": "Sign Tools MCP Server",
-        "script": PROJECT_ROOT / "sign-tools-mcp-server" / "sign-tools-mcp-server" / "sign_tools_mcp_server.py",
+        "script": PROJECT_ROOT / "tools" / "sign-tools" / "server.py",
         "port": 8654,
         "args": [
-            "--workspace", str(PROJECT_ROOT / "workspace" / "sign-tools")
+            "--workspace", "tools/workspace/sign-tools"
         ]
     },
     "static-analyzer": {
         "name": "Static Analyzer",
-        "script": PROJECT_ROOT / "static-analyzer" / "static_analyzer.py",
+        "script": PROJECT_ROOT / "tools" / "static-analyzer" / "server.py",
         "port": None,  # stdio 模式
         "args": []
     },
     "diff-tool": {
         "name": "Diff Tool",
-        "script": PROJECT_ROOT / "diff-tool" / "diff_tool.py",
+        "script": PROJECT_ROOT / "tools" / "diff" / "server.py",
         "port": None,  # stdio 模式
+        "args": []
+    },
+    "frida": {
+        "name": "Frida MCP Server",
+        "script": PROJECT_ROOT / "tools" / "frida" / "server.py",
+        "port": 8657,
         "args": []
     }
 }
@@ -104,6 +112,10 @@ class ServerManager:
         config = SERVERS_CONFIG.get(server_key)
         if not config:
             return False
+        
+        # 检查脚本或 JAR 文件
+        if config.get("use_java"):
+            return config.get("jar", config["script"]).exists()
         return config["script"].exists()
 
     def start_server(self, server_key: str, http_mode: bool = False) -> Optional[subprocess.Popen]:
@@ -123,11 +135,17 @@ class ServerManager:
             return None
 
         if not self.check_script_exists(server_key):
-            print(f"[错误] 服务器脚本不存在: {config['script']}")
+            print(f"[错误] 服务器脚本不存在: {config.get('jar', config['script'])}")
             return None
 
         # 构建命令
-        cmd = [sys.executable, str(config["script"])]
+        if config.get("use_java"):
+            # Java 模式启动
+            java_path = PROJECT_ROOT / "tools" / "bin" / "jre" / "bin" / "java.exe"
+            cmd = [str(java_path), "-jar", str(config["jar"])]
+        else:
+            # Python 模式启动
+            cmd = [sys.executable, str(config["script"])]
 
         # 添加 HTTP 模式参数
         if http_mode and config["port"]:
@@ -283,6 +301,7 @@ def parse_arguments() -> argparse.Namespace:
   - sign-tools: Sign Tools MCP Server
   - static-analyzer: Static Analyzer
   - diff-tool: Diff Tool
+  - frida: Frida MCP Server
         """
     )
 

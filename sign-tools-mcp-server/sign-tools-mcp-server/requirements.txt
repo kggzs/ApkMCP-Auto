@@ -1,9 +1,0 @@
-# Sign Tools MCP Server 依赖文件
-# Python 版本要求: >=3.10
-
-# MCP 框架
-fastmcp>=1.0.0
-
-# 日志和参数处理
-logging
-argparse

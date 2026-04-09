@@ -1,138 +1,76 @@
 {
-  "model": {
-    "provider": "anthropic",
-    "name": "claude-sonnet-4-5",
-    "fallback": "claude-sonnet-4"
-  },
-
-  "mcp": {
-    "servers": {
-      "jadx-mcp-server": {
-        "type": "stdio",
-        "command": "java",
-        "args": [
-          "-jar",
-          "E:/www/ApkMCP-Auto/java/jadx-mcp-server/jadx-ai-mcp-6.3.0.jar"
-        ],
-        "enabled": true,
-        "description": "jadx MCP 服务器 (Java JAR 版本)"
-      },
-      "jadx-mcp-python": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"
-        ],
-        "enabled": false,
-        "description": "jadx MCP 服务器 (Python 版本)"
-      },
-      "apktool-mcp-server": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py",
-          "--workspace",
-          "E:/www/ApkMCP-Auto/workspace/apktool",
-          "--apktool-path",
-          "E:/www/ApkMCP-Auto/java/apktool/apktool.bat"
-        ],
-        "enabled": true,
-        "description": "apktool MCP 服务器"
-      },
-      "adb-mcp-server": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/adb/adb-mcp-server/adb_mcp_server.py",
-          "--adb-path",
-          "E:/www/ApkMCP-Auto/adb/adb.exe"
-        ],
-        "enabled": true,
-        "description": "ADB MCP 服务器 - 设备管理和调试"
-      },
-      "sign-tools-mcp-server": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/sign-tools-mcp-server/sign-tools-mcp-server/sign_tools_mcp_server.py",
-          "--workspace",
-          "E:/www/ApkMCP-Auto/workspace/sign-tools"
-        ],
-        "enabled": true,
-        "description": "签名工具 MCP 服务器 - APK 签名和密钥管理"
-      },
-      "static-analyzer": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/static-analyzer/static_analyzer.py"
-        ],
-        "enabled": true,
-        "description": "静态分析工具 - 权限、字符串、SDK 识别"
-      },
-      "diff-tool": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/diff-tool/diff_tool.py"
-        ],
-        "enabled": true,
-        "description": "文件对比工具 - APK、Smali、资源对比"
-      },
-      "frida-mcp-server": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "E:/www/ApkMCP-Auto/frida-mcp-server/frida_mcp_server.py"
-        ],
-        "enabled": false,
-        "description": "Frida MCP 服务器 - 动态插桩分析（占位）"
-      }
-    }
-  },
-
-  "permission": {
-    "read": {
-      "allow": ["*"],
-      "deny": ["*.env", "./secrets/**"]
+  "mcpServers": {
+    "jadx-mcp-server": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "JADX MCP 服务器 - Java 反编译分析",
+      "command": "tools/bin/jre/bin/java.exe",
+      "args": [
+        "-jar",
+        "tools/jadx/server.jar"
+      ]
     },
-    "edit": {
-      "allow": ["src/**"],
-      "deny": [],
-      "prompt": ["*"]
+    "apktool-mcp-server": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "APKTool MCP 服务器 - APK 解码/编码",
+      "command": "python",
+      "args": [
+        "tools/apktool/server.py",
+        "--workspace",
+        "tools/workspace/apktool",
+        "--apktool-path",
+        "tools/bin/apktool.bat"
+      ]
     },
-    "bash": {
-      "allow": ["git *"],
-      "deny": ["rm *"],
-      "prompt": ["*"]
+    "adb-mcp-server": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "ADB MCP 服务器 - 设备管理和调试",
+      "command": "python",
+      "args": [
+        "tools/adb/server.py",
+        "--adb-path",
+        "tools/bin/adb.exe"
+      ]
+    },
+    "sign-tools-mcp-server": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "签名工具 MCP 服务器 - APK 签名和密钥管理",
+      "command": "python",
+      "args": [
+        "tools/sign-tools/server.py",
+        "--workspace",
+        "tools/workspace/sign-tools"
+      ]
+    },
+    "static-analyzer": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "静态分析工具 - 权限、字符串、SDK 识别",
+      "command": "python",
+      "args": [
+        "tools/static-analyzer/server.py"
+      ]
+    },
+    "diff-tool": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "文件对比工具 - APK、Smali、资源对比",
+      "command": "python",
+      "args": [
+        "tools/diff/server.py"
+      ]
+    },
+    "frida-mcp-server": {
+      "type": "stdio",
+      "enabled": true,
+      "description": "Frida MCP 服务器 - 动态插桩分析",
+      "command": "python",
+      "args": [
+        "tools/frida/server.py"
+      ]
     }
-  },
-
-  "tools": {
-    "write": true,
-    "bash": true,
-    "webfetch": true,
-    "search": true
-  },
-
-  "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "*.log",
-      ".git/**",
-      "java/jre/**",
-      "*.zip",
-      "*.jar",
-      "workspace/**"
-    ]
-  },
-
-  "instructions": {
-    "default": "Android 逆向工程工具项目，包含 jadx-gui、apktool、adb、签名工具、静态分析器和文件对比工具及其 MCP 服务器。"
-  },
-
-  "ui": {
-    "scroll_speed": 3,
-    "diff_style": "auto"
   }
 }

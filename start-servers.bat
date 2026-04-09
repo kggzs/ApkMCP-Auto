@@ -4,6 +4,7 @@ title MCP Server 启动管理器
 
 REM Android 逆向工程 MCP 工具套件启动脚本
 REM 支持启动所有或指定 MCP 服务器
+REM 所有路径使用相对路径，确保项目可移植
 
 echo ================================================================================
 echo Android 逆向工程 MCP 工具套件
@@ -11,7 +12,7 @@ echo MCP Server 启动管理器
 echo ================================================================================
 echo.
 
-REM 设置项目根目录
+REM 设置项目根目录（使用相对路径）
 set "PROJECT_ROOT=%~dp0"
 set "PROJECT_ROOT=%PROJECT_ROOT:~0,-1%"
 
@@ -87,6 +88,7 @@ echo   - adb               ADB MCP Server
 echo   - sign-tools        Sign Tools MCP Server
 echo   - static-analyzer   Static Analyzer
 echo   - diff-tool         Diff Tool
+echo   - frida             Frida MCP Server
 echo.
 echo 示例:
 echo   start-servers.bat all                    启动所有服务器

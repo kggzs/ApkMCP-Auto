@@ -1,0 +1,15 @@
+# 文件对比工具 MCP Server 依赖
+# 安装命令: pip install -r requirements.txt
+
+# MCP 框架依赖
+mcp>=1.0.0
+
+# 标准库依赖 (Python 内置，无需安装)
+# - os
+# - hashlib
+# - zipfile
+# - tempfile
+# - shutil
+# - difflib
+# - pathlib
+# - typing
