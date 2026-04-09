@@ -22,8 +22,13 @@
 |------|------|------|
 | **JADX MCP Server** | 与 JADX-GUI 集成的 MCP 服务器，提供实时反编译分析 | `java/jadx-mcp-server/` |
 | **APKTool MCP Server** | 基于 APKTool 的 MCP 服务器，支持 APK 解码/编码与 Smali 修改 | `java/apktool-mcp-server/` |
+| **ADB MCP Server** | Android Debug Bridge MCP 服务器，提供设备管理和调试功能 | `adb/adb-mcp-server/` |
+| **Sign Tools MCP Server** | APK 签名工具 MCP 服务器，支持密钥管理和签名验证 | `sign-tools-mcp-server/` |
+| **Static Analyzer** | 静态分析增强工具，提供权限、字符串、SDK 识别 | `static-analyzer/` |
+| **Diff Tool** | 文件对比工具，支持 APK、Smali、资源文件对比 | `diff-tool/` |
 | **JADX-GUI** | 带 JRE 的 JADX 反编译工具 | `java/jadx-gui/` |
 | **APKTool** | APK 反编译/重打包工具 | `java/apktool/` |
+| **ADB** | Android Debug Bridge 工具 | `adb/` |
 
 ---
 
@@ -50,6 +55,40 @@
 - 自动备份机制
 - 工作空间管理
 
+### ADB MCP Server
+
+- 设备连接状态管理
+- APK 安装/卸载
+- 应用包信息查询
+- 日志捕获（logcat）
+- Shell 命令执行
+- 文件传输（push/pull）
+- 屏幕截图
+- 应用启动/停止控制
+
+### Sign Tools MCP Server
+
+- 密钥库生成与管理
+- APK 签名（V1/V2/V3）
+- 签名验证
+- zipalign 对齐优化
+- 密钥信息查询
+
+### Static Analyzer
+
+- 权限分析（识别危险权限）
+- 字符串资源提取
+- URL/IP/API 端点提取
+- 第三方 SDK 识别
+- 完整静态分析报告
+
+### Diff Tool
+
+- APK 文件对比
+- Smali 文件行级对比
+- 资源目录对比
+- 通用文本文件对比
+
 ---
 
 ## 系统要求
@@ -75,33 +114,68 @@ pip install -r requirements.txt
 # 安装 APKTool MCP Server 依赖
 cd java/apktool-mcp-server/apktool-mcp-server
 pip install -r requirements.txt
+
+# 安装 ADB MCP Server 依赖
+cd adb/adb-mcp-server
+pip install -r requirements.txt
+
+# 安装 Sign Tools MCP Server 依赖
+cd sign-tools-mcp-server/sign-tools-mcp-server
+pip install -r requirements.txt
+
+# 安装 Static Analyzer 依赖
+cd static-analyzer
+pip install -r requirements.txt
+
+# 安装 Diff Tool 依赖
+cd diff-tool
+pip install -r requirements.txt
 ```
 
-### 2. 启动 JADX MCP Server
+### 2. 启动 MCP Servers
+
+#### 方式一：使用启动脚本（推荐）
 
 ```bash
-cd java/jadx-mcp-server/jadx-mcp-server
+# 启动所有服务器
+python start_all_servers.py
 
-# 标准模式 (stdio)
+# 启动指定服务器
+python start_all_servers.py --servers jadx,apktool,adb
+
+# 使用 Windows 批处理脚本
+start-servers.bat
+```
+
+#### 方式二：手动启动
+
+```bash
+# 启动 JADX MCP Server
+cd java/jadx-mcp-server/jadx-mcp-server
 python jadx_mcp_server.py
 
-# HTTP 模式
-python jadx_mcp_server.py --http --port 8651
-```
-
-### 3. 启动 APKTool MCP Server
-
-```bash
+# 启动 APKTool MCP Server
 cd java/apktool-mcp-server/apktool-mcp-server
+python apktool_mcp_server.py --workspace ./workspace
 
-# 标准模式
-python apktool_mcp_server.py
+# 启动 ADB MCP Server
+cd adb/adb-mcp-server
+python adb_mcp_server.py
 
-# HTTP 模式，指定工作目录
-python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
+# 启动 Sign Tools MCP Server
+cd sign-tools-mcp-server/sign-tools-mcp-server
+python sign_tools_mcp_server.py --workspace ./workspace
+
+# 启动 Static Analyzer
+cd static-analyzer
+python static_analyzer.py
+
+# 启动 Diff Tool
+cd diff-tool
+python diff_tool.py
 ```
 
-### 4. 配置 MCP 客户端
+### 3. 配置 MCP 客户端
 
 #### Claude Desktop 配置
 
@@ -112,11 +186,27 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
   "mcpServers": {
     "jadx": {
       "command": "python",
-      "args": ["E:/A_java/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"]
+      "args": ["E:/www/ApkMCP-Auto/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"]
     },
     "apktool": {
       "command": "python",
-      "args": ["E:/A_java/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py"]
+      "args": ["E:/www/ApkMCP-Auto/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py"]
+    },
+    "adb": {
+      "command": "python",
+      "args": ["E:/www/ApkMCP-Auto/adb/adb-mcp-server/adb_mcp_server.py"]
+    },
+    "sign-tools": {
+      "command": "python",
+      "args": ["E:/www/ApkMCP-Auto/sign-tools-mcp-server/sign-tools-mcp-server/sign_tools_mcp_server.py"]
+    },
+    "static-analyzer": {
+      "command": "python",
+      "args": ["E:/www/ApkMCP-Auto/static-analyzer/static_analyzer.py"]
+    },
+    "diff-tool": {
+      "command": "python",
+      "args": ["E:/www/ApkMCP-Auto/diff-tool/diff_tool.py"]
     }
   }
 }
@@ -141,7 +231,7 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
         "command": "java",
         "args": [
           "-jar",
-          "E:/A_java/java/jadx-mcp-server/jadx-ai-mcp-6.3.0.jar"
+          "E:/www/ApkMCP-Auto/java/jadx-mcp-server/jadx-ai-mcp-6.3.0.jar"
         ],
         "enabled": true,
         "description": "jadx MCP 服务器 (Java JAR 版本)"
@@ -150,7 +240,7 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
         "type": "stdio",
         "command": "python",
         "args": [
-          "E:/A_java/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"
+          "E:/www/ApkMCP-Auto/java/jadx-mcp-server/jadx-mcp-server/jadx_mcp_server.py"
         ],
         "enabled": false,
         "description": "jadx MCP 服务器 (Python 版本)"
@@ -159,14 +249,54 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
         "type": "stdio",
         "command": "python",
         "args": [
-          "E:/A_java/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py",
+          "E:/www/ApkMCP-Auto/java/apktool-mcp-server/apktool-mcp-server/apktool_mcp_server.py",
           "--workspace",
-          "E:/A_java/apktool_workspace",
+          "E:/www/ApkMCP-Auto/workspace/apktool",
           "--apktool-path",
-          "E:/A_java/java/apktool/apktool.bat"
+          "E:/www/ApkMCP-Auto/java/apktool/apktool.bat"
         ],
         "enabled": true,
         "description": "apktool MCP 服务器"
+      },
+      "adb-mcp-server": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/www/ApkMCP-Auto/adb/adb-mcp-server/adb_mcp_server.py",
+          "--adb-path",
+          "E:/www/ApkMCP-Auto/adb/adb.exe"
+        ],
+        "enabled": true,
+        "description": "ADB MCP 服务器 - 设备管理和调试"
+      },
+      "sign-tools-mcp-server": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/www/ApkMCP-Auto/sign-tools-mcp-server/sign-tools-mcp-server/sign_tools_mcp_server.py",
+          "--workspace",
+          "E:/www/ApkMCP-Auto/workspace/sign-tools"
+        ],
+        "enabled": true,
+        "description": "签名工具 MCP 服务器 - APK 签名和密钥管理"
+      },
+      "static-analyzer": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/www/ApkMCP-Auto/static-analyzer/static_analyzer.py"
+        ],
+        "enabled": true,
+        "description": "静态分析工具 - 权限、字符串、SDK 识别"
+      },
+      "diff-tool": {
+        "type": "stdio",
+        "command": "python",
+        "args": [
+          "E:/www/ApkMCP-Auto/diff-tool/diff_tool.py"
+        ],
+        "enabled": true,
+        "description": "文件对比工具 - APK、Smali、资源对比"
       }
     }
   },
@@ -202,12 +332,13 @@ python apktool_mcp_server.py --http --port 8652 --workspace ./workspace
       ".git/**",
       "java/jre/**",
       "*.zip",
-      "*.jar"
+      "*.jar",
+      "workspace/**"
     ]
   },
 
   "instructions": {
-    "default": "Android 逆向工程工具项目，包含 jadx-gui、apktool 及其 MCP 服务器。"
+    "default": "Android 逆向工程工具项目，包含 jadx-gui、apktool、adb、签名工具、静态分析器和文件对比工具及其 MCP 服务器。"
   },
 
   "ui": {
@@ -222,7 +353,7 @@ Trae 配置说明：
 | 配置项 | 说明 |
 |--------|------|
 | `model` | AI 模型配置，支持主模型和备用模型 |
-| `mcp.servers` | MCP 服务器配置，包含 jadx 和 apktool 两个服务器 |
+| `mcp.servers` | MCP 服务器配置，包含所有工具服务器 |
 | `permission` | 文件读写和命令执行权限控制 |
 | `tools` | 启用/禁用各类工具 |
 | `watcher` | 文件监控忽略规则 |
@@ -237,7 +368,7 @@ Trae 配置说明：
 
 ```
 # 使用 APKTool MCP Server 解码 APK
-请帮我解码 APK 文件 E:/A_java/app-debug.apk
+请帮我解码 APK 文件 E:/www/ApkMCP-Auto/test.apk
 
 # 分析完成后可以查看
 - AndroidManifest.xml
@@ -257,6 +388,55 @@ Trae 配置说明：
 
 # 查找引用
 查找哪些方法调用了 sendRequest 方法
+```
+
+### 设备调试
+
+```
+# 使用 ADB MCP Server 连接设备
+列出已连接的 Android 设备
+
+# 安装 APK
+安装 APK 文件到设备
+
+# 获取日志
+捕获应用的日志信息
+```
+
+### APK 签名
+
+```
+# 使用 Sign Tools MCP Server 生成密钥
+生成一个新的密钥库用于签名
+
+# 签名 APK
+对修改后的 APK 进行签名
+
+# 验证签名
+验证 APK 签名是否正确
+```
+
+### 静态分析
+
+```
+# 使用 Static Analyzer 分析 APK
+分析 APK 的权限和潜在风险
+
+# 提取字符串
+提取 APK 中的所有字符串资源
+
+# 识别 SDK
+识别 APK 中使用的第三方 SDK
+```
+
+### 文件对比
+
+```
+# 使用 Diff Tool 对比 APK
+对比原始 APK 和修改后的 APK
+
+# 对比 Smali 文件
+对比两个 Smali 文件的差异
 ```
 
 ---
@@ -301,7 +481,7 @@ Trae 配置说明：
 ## 项目结构
 
 ```
-A_java/
+ApkMCP-Auto/
 ├── java/
 │   ├── apktool/                    # APKTool 工具
 │   │   ├── apktool.bat
@@ -314,11 +494,30 @@ A_java/
 │   │   ├── jadx-gui-1.5.5.exe
 │   │   └── jre/                    # 内置 JRE
 │   └── jadx-mcp-server/            # JADX MCP Server
+│       ├── jadx-ai-mcp-6.3.0.jar
 │       └── jadx-mcp-server/
 │           ├── jadx_mcp_server.py
-│           ├── requirements.txt
-│           └── src/
+│           └── requirements.txt
+├── adb/                            # ADB 工具
+│   ├── adb.exe
+│   ├── adb-mcp-server/             # ADB MCP Server
+│   │   ├── adb_mcp_server.py
+│   │   └── requirements.txt
+│   └── ...
+├── sign-tools-mcp-server/          # 签名工具 MCP Server
+│   └── sign-tools-mcp-server/
+│       ├── sign_tools_mcp_server.py
+│       └── requirements.txt
+├── static-analyzer/                # 静态分析工具
+│   ├── static_analyzer.py
+│   └── requirements.txt
+├── diff-tool/                      # 文件对比工具
+│   ├── diff_tool.py
+│   └── requirements.txt
+├── workspace/                      # 工作目录
 ├── zip/                            # 压缩包备份
+├── start_all_servers.py            # 启动所有服务器的脚本
+├── start-servers.bat               # Windows 启动脚本
 ├── prompt_template.md              # APK 逆向分析提示词模板
 └── README.md                       # 本文件
 ```
@@ -372,6 +571,59 @@ A_java/
 | `get_workspace_info` | 获取工作空间信息 |
 | `health_check` | 健康检查 |
 
+### ADB MCP Server 工具
+
+| 工具名 | 功能描述 |
+|--------|----------|
+| `health_check` | 服务器健康检查 |
+| `list_devices` | 列出已连接设备 |
+| `get_device_info` | 获取设备详细信息 |
+| `install_apk` | 安装 APK 文件 |
+| `uninstall_package` | 卸载应用包 |
+| `get_package_info` | 获取应用包信息 |
+| `get_logcat` | 获取设备日志 |
+| `clear_logcat` | 清除日志缓冲区 |
+| `execute_shell` | 执行 Shell 命令 |
+| `push_file` | 推送文件到设备 |
+| `pull_file` | 从设备拉取文件 |
+| `screenshot` | 截取屏幕 |
+| `list_packages` | 列出已安装应用 |
+| `start_activity` | 启动 Activity |
+| `force_stop_package` | 强制停止应用 |
+
+### Sign Tools MCP Server 工具
+
+| 工具名 | 功能描述 |
+|--------|----------|
+| `health_check` | 服务器健康检查 |
+| `generate_keystore` | 生成密钥库 |
+| `list_keystores` | 列出所有密钥库 |
+| `get_keystore_info` | 获取密钥库信息 |
+| `delete_keystore` | 删除密钥库 |
+| `sign_apk` | 签名 APK 文件 |
+| `verify_signature` | 验证 APK 签名 |
+| `zipalign_apk` | 对齐优化 APK |
+| `get_workspace_info` | 获取工作空间信息 |
+
+### Static Analyzer 工具
+
+| 工具名 | 功能描述 |
+|--------|----------|
+| `analyze_permissions` | 分析权限 |
+| `extract_strings` | 提取字符串资源 |
+| `extract_endpoints` | 提取 URL/IP/API 端点 |
+| `identify_sdks` | 识别第三方 SDK |
+| `full_analysis` | 执行完整分析 |
+
+### Diff Tool 工具
+
+| 工具名 | 功能描述 |
+|--------|----------|
+| `compare_apks` | 对比两个 APK 文件 |
+| `compare_smali` | 对比两个 Smali 文件 |
+| `compare_resources` | 对比两个资源目录 |
+| `compare_text_files` | 对比两个文本文件 |
+
 ---
 
 ## 技术栈
@@ -382,6 +634,7 @@ A_java/
 - **APKTool 3.0+** - APK 反编译/重打包
 - **JADX 1.5+** - Android Dex 反编译
 - **Java 17** - JADX 运行环境
+- **ADB** - Android 调试桥
 
 ---
 
@@ -406,6 +659,24 @@ A_java/
 | `--workspace` | apktool_mcp_server_workspace | 工作目录 |
 | `--timeout` | 300 | 命令超时时间（秒） |
 | `--apktool-path` | apktool | APKTool 可执行文件路径 |
+
+### ADB MCP Server
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--http` | False | 启用 HTTP 传输模式 |
+| `--port` | 8653 | MCP 服务器端口 |
+| `--adb-path` | adb.exe | ADB 可执行文件路径 |
+
+### Sign Tools MCP Server
+
+| 参数 | 默认值 | 说明 |
+|------|--------|------|
+| `--http` | False | 启用 HTTP 传输模式 |
+| `--port` | 8654 | MCP 服务器端口 |
+| `--workspace` | workspace | 工作目录 |
+| `--java-home` | None | Java 主目录 |
+| `--timeout` | 300 | 命令超时时间（秒） |
 
 ---
 

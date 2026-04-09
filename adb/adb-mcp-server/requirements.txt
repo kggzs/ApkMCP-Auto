@@ -1,0 +1,16 @@
+# ADB MCP Server 依赖项
+# Python >= 3.10
+
+# MCP 框架
+fastmcp>=1.0.0
+
+# 日志和参数解析 (Python 标准库)
+# logging - Python 内置
+# argparse - Python 内置
+# subprocess - Python 内置
+# os - Python 内置
+# json - Python 内置
+# time - Python 内置
+# re - Python 内置
+# pathlib - Python 内置
+# typing - Python 内置
